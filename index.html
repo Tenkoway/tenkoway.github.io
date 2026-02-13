@@ -3,47 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>tekoway</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             margin: 0;
-            padding: 0;
-            background-color: #0f0f0f;
-            color: #e0e0e0;
-            font-family: Arial, sans-serif;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: Arial, sans-serif;
+            color: white;
             text-align: center;
         }
+
         .card {
-            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
         }
+
         h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
+            margin: 0;
+            font-size: 48px;
         }
+
         p {
+            margin-top: 10px;
             font-size: 18px;
             opacity: 0.8;
         }
+
         a {
-            color: #4da6ff;
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: white;
+            color: black;
             text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
         }
+
         a:hover {
-            text-decoration: underline;
+            background: #ddd;
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>Привет, я tekoway</h1>
-        <p>Исследую системы. Думаю нестандартно. Люблю сложные задачи.</p>
-        <p>Сейчас работаю над собой и своими проектами.</p>
-        <p>
-            <a href="https://github.com/tenkoway">GitHub</a>
-        </p>
+        <h1>tekoway</h1>
+        <p>Welcome to my GitHub Page 🚀</p>
+        <a href="https://github.com/tenkoway" target="_blank">My GitHub</a>
     </div>
 </body>
 </html>
