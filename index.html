@@ -1,63 +1,377 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>tekoway</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tekoway · ocean · живой звук</title>
+  <!-- Google Fonts: Inter / Montserrat — чистый гротеск -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (свободные иконки) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- plyr.io — красивый HTML5 плеер (чтобы вытянуть youtube и стилизовать) -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <style>
+    /* сброс — монохромный хаос */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(0,0,0,0.3);
-        }
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', 'Montserrat', sans-serif;
+      background-color: #0b0d10;
+      background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center 30%;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+    }
 
-        h1 {
-            margin: 0;
-            font-size: 48px;
-        }
+    /* тёмный оверлей + легкий блюр фона */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1;
+      pointer-events: none;
+    }
 
-        p {
-            margin-top: 10px;
-            font-size: 18px;
-            opacity: 0.8;
-        }
+    /* падающие звёзды (частицы) — атмосфера */
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
 
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: white;
-            color: black;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
+    .particle {
+      position: absolute;
+      background-color: #fff;
+      border-radius: 50%;
+      opacity: 0.5;
+      box-shadow: 0 0 12px 3px rgba(255,255,255,0.8);
+      animation: fall linear infinite;
+    }
 
-        a:hover {
-            background: #ddd;
-        }
-    </style>
+    @keyframes fall {
+      0% { transform: translateY(-20vh) translateX(0) scale(1); opacity: 0.7; }
+      70% { opacity: 0.3; }
+      100% { transform: translateY(120vh) translateX(20px) scale(0.2); opacity: 0; }
+    }
+
+    /* генерация 30 уникальных частиц */
+    .particle:nth-child(1) { left: 8%; width: 3px; height: 3px; animation-duration: 10s; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 17%; width: 4px; height: 4px; animation-duration: 14s; animation-delay: 2s; }
+    .particle:nth-child(3) { left: 28%; width: 2px; height: 2px; animation-duration: 9s; animation-delay: 1s; }
+    .particle:nth-child(4) { left: 41%; width: 5px; height: 5px; animation-duration: 16s; animation-delay: 4s; }
+    .particle:nth-child(5) { left: 55%; width: 3px; height: 3px; animation-duration: 11s; animation-delay: 0.5s; }
+    .particle:nth-child(6) { left: 63%; width: 2px; height: 2px; animation-duration: 8s; animation-delay: 3s; }
+    .particle:nth-child(7) { left: 72%; width: 4px; height: 4px; animation-duration: 13s; animation-delay: 2.2s; }
+    .particle:nth-child(8) { left: 81%; width: 3px; height: 3px; animation-duration: 12s; animation-delay: 5s; }
+    .particle:nth-child(9) { left: 90%; width: 5px; height: 5px; animation-duration: 18s; animation-delay: 1.8s; }
+    .particle:nth-child(10) { left: 96%; width: 2px; height: 2px; animation-duration: 7s; animation-delay: 2.7s; }
+    .particle:nth-child(11) { left: 12%; width: 4px; height: 4px; animation-duration: 15s; animation-delay: 6s; }
+    .particle:nth-child(12) { left: 23%; width: 3px; height: 3px; animation-duration: 11.5s; animation-delay: 3.3s; }
+    .particle:nth-child(13) { left: 35%; width: 2px; height: 2px; animation-duration: 9.2s; animation-delay: 7s; }
+    .particle:nth-child(14) { left: 47%; width: 5px; height: 5px; animation-duration: 17s; animation-delay: 1.2s; }
+    .particle:nth-child(15) { left: 59%; width: 3px; height: 3px; animation-duration: 10.7s; animation-delay: 4.4s; }
+    .particle:nth-child(16) { left: 68%; width: 4px; height: 4px; animation-duration: 14.2s; animation-delay: 0.9s; }
+    .particle:nth-child(17) { left: 77%; width: 2px; height: 2px; animation-duration: 8.8s; animation-delay: 5.7s; }
+    .particle:nth-child(18) { left: 85%; width: 3px; height: 3px; animation-duration: 12.9s; animation-delay: 2.4s; }
+    .particle:nth-child(19) { left: 14%; width: 5px; height: 5px; animation-duration: 19s; animation-delay: 3.9s; }
+    .particle:nth-child(20) { left: 31%; width: 3px; height: 3px; animation-duration: 9.9s; animation-delay: 0.1s; }
+    .particle:nth-child(21) { left: 44%; width: 4px; height: 4px; animation-duration: 13.4s; animation-delay: 6.3s; }
+    .particle:nth-child(22) { left: 52%; width: 2px; height: 2px; animation-duration: 7.4s; animation-delay: 8.1s; }
+    .particle:nth-child(23) { left: 66%; width: 3px; height: 3px; animation-duration: 11.2s; animation-delay: 1.6s; }
+    .particle:nth-child(24) { left: 74%; width: 5px; height: 5px; animation-duration: 16.5s; animation-delay: 4.8s; }
+    .particle:nth-child(25) { left: 83%; width: 3px; height: 3px; animation-duration: 10.3s; animation-delay: 2.9s; }
+    .particle:nth-child(26) { left: 92%; width: 2px; height: 2px; animation-duration: 8.3s; animation-delay: 7.2s; }
+    .particle:nth-child(27) { left: 19%; width: 4px; height: 4px; animation-duration: 15.8s; animation-delay: 0.4s; }
+    .particle:nth-child(28) { left: 37%; width: 5px; height: 5px; animation-duration: 18.2s; animation-delay: 5.1s; }
+    .particle:nth-child(29) { left: 49%; width: 3px; height: 3px; animation-duration: 12.1s; animation-delay: 3.5s; }
+    .particle:nth-child(30) { left: 61%; width: 2px; height: 2px; animation-duration: 7.9s; animation-delay: 9.0s; }
+
+    /* главная карточка — стекло */
+    .card {
+      position: relative;
+      z-index: 20;
+      max-width: 500px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border-radius: 42px;
+      padding: 2.5rem 2rem 2.2rem 2rem;
+      box-shadow: 0 30px 70px -10px #000, 0 0 0 1px rgba(255,255,255,0.08) inset;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* аватарка — загружается из Pinterest (прямая ссылка) */
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem auto;
+      background: url('https://i.pinimg.com/736x/b2/d4/1c/b2d41c0ba17ee99dafc825bde708bf6d.jpg') center/cover;
+      border: 2.5px solid #fff;
+      box-shadow: 0 0 40px 8px rgba(255,255,255,0.5), 0 6px 16px black;
+      transition: 0.2s;
+    }
+
+    .avatar:hover {
+      box-shadow: 0 0 55px 15px rgba(255,255,255,0.7);
+    }
+
+    h2 {
+      font-size: 2.4rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      text-align: center;
+      color: white;
+      text-transform: lowercase;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 8px black;
+    }
+
+    .quote {
+      font-size: 1.3rem;
+      font-weight: 300;
+      line-height: 1.6;
+      text-align: center;
+      color: rgba(255,255,255,0.95);
+      max-width: 300px;
+      margin: 0 auto 1.2rem auto;
+      font-style: normal;
+    }
+
+    .quote i {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.9);
+      font-size: 1.2rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      text-transform: lowercase;
+    }
+
+    .location i {
+      filter: drop-shadow(0 0 8px white);
+    }
+
+    /* КНОПКА ТЕЛЕГРАМА — кликабельная ссылка */
+    .telegram-link {
+      display: flex;
+      justify-content: center;
+      text-decoration: none;
+      margin: 1.8rem 0 2.2rem 0;
+    }
+
+    .telegram-link i {
+      font-size: 3.4rem;
+      color: white;
+      background: transparent;
+      transition: 0.15s;
+      filter: drop-shadow(0 0 18px rgba(255,255,255,0.6));
+    }
+
+    .telegram-link:hover i {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 30px white);
+    }
+
+    /* плеер — кастомизированный plyr + обёртка */
+    .player-wrapper {
+      background: rgba(10, 10, 10, 0.7);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 60px;
+      padding: 0.5rem 0.8rem 0.5rem 0.5rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 20px 30px -10px black;
+    }
+
+    /* plyr на тёмном фоне — делаем его прозрачным и белым */
+    .plyr {
+      --plyr-color-main: white;
+      --plyr-audio-controls-background: transparent;
+      --plyr-audio-control-color: white;
+      --plyr-control-spacing: 12px;
+      --plyr-control-radius: 30px;
+      --plyr-font-size-time: 0.8rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .plyr--audio .plyr__controls {
+      background: transparent !important;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    .plyr__control--overlaid {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid white;
+    }
+
+    .plyr__control--overlaid svg {
+      fill: white;
+    }
+
+    .plyr__control svg {
+      fill: white;
+    }
+
+    .plyr__progress__buffer {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .plyr__time {
+      color: white;
+      font-weight: 300;
+    }
+
+    /* подгон под компактный дизайн внутри карточки */
+    .plyr--audio .plyr__controls {
+      padding: 0 6px !important;
+    }
+
+    .plyr__controls__item.plyr__time {
+      padding: 0 6px;
+    }
+
+    /* мобильная адаптация */
+    @media (max-width: 480px) {
+      .card {
+        padding: 1.8rem 1.2rem 1.5rem;
+      }
+      h2 {
+        font-size: 2rem;
+      }
+      .quote {
+        font-size: 1.1rem;
+      }
+      .avatar {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <h1>tekoway</h1>
-        <p>Welcome to my GitHub Page 🚀</p>
-        <a href="https://github.com/tenkoway" target="_blank">My GitHub</a>
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <div class="card">
+    <!-- аватар с Pinterest (прямое изображение) -->
+    <div class="avatar"></div>
+
+    <h2>tekoway</h2>
+
+    <div class="quote">
+      <i>“</i> you dont deserve another day <i>”</i>
     </div>
+
+    <div class="location">
+      <i class="fas fa-map-pin"></i>
+      <span>Ocean</span>
+    </div>
+
+    <!-- кликабельная кнопка Telegram (переход на https://t.me/tekoway) -->
+    <a href="https://t.me/tekoway" target="_blank" class="telegram-link">
+      <i class="fab fa-telegram-plane"></i>
+    </a>
+
+    <!-- плеер: YouTube через plyr.io -->
+    <div class="player-wrapper">
+      <div id="player" data-plyr-provider="youtube" data-plyr-embed-id="BJMwVXFto2s"></div>
+    </div>
+  </div>
+
+  <!-- библиотека plyr -->
+  <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+  <script>
+    (function() {
+      // инициализация плеера с кастомными настройками (монохром, без лишнего)
+      const player = new Plyr('#player', {
+        controls: ['play', 'progress', 'current-time', 'duration', 'mute', 'volume'],
+        invertTime: false,
+        toggleInvert: false,
+        autoplay: false,
+        muted: false,
+        clickToPlay: true,
+        hideControls: false,
+        settings: [],          // отключаем меню настроек
+        tooltips: { controls: false, seek: true },
+        seekTime: 10,
+        volume: 0.7,
+        keyboard: { focused: true, global: true },
+        fullscreen: { enabled: false } // отключаем полноэкранный режим (по желанию)
+      });
+
+      // дополнительно: заставляем плеер быть абсолютно белым на чёрном (это уже css)
+      // если нужно скрыть жёлтый цвет plyr — всё сделано через css переменную
+    })();
+  </script>
+  <!-- фикс для корректной ширины плеера (plyr оборачивается в div с размерами) -->
+  <style>
+    /* чтобы плеер не разваливался */
+    .plyr {
+      width: 100%;
+      height: auto;
+      border-radius: 40px;
+    }
+    .plyr__controls {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      background: transparent !important;
+    }
+    /* кастом под компактность */
+    .plyr__progress {
+      flex: 1;
+      margin: 0 6px;
+    }
+    .plyr__controls__item.plyr__time {
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: #eee;
+    }
+    .player-wrapper {
+      padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+    }
+    /* делаем кнопки чуть больше / адаптив */
+    .plyr__control svg {
+      height: 20px;
+      width: 20px;
+    }
+    .plyr__control--overlaid svg {
+      height: 24px;
+      width: 24px;
+    }
+    @media (max-width: 430px) {
+      .plyr__controls {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </body>
 </html>
