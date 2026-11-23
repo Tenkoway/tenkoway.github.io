@@ -110,16 +110,13 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 :root {
   color-scheme: dark;
   --bg: #121112;
-  --burgundy: #800020;
-  --hero: #1a1115;
-  --surface: #181416;
-  --ink: #d9cbcd;
-  --body: #c6b1b6;
-  --muted: #a18b92;
-  --line: #3c232c;
-  --row: #2b1d23;
-  --accent: #bc858f;
-  scrollbar-color: #895461 var(--bg);
+  --hero: #500d13;
+  --ink: #f4e5de;
+  --body: #dec3ba;
+  --muted: #c79d95;
+  --line: #712a32;
+  --accent: #da8f89;
+  scrollbar-color: #98494d var(--bg);
   --mono: "Geist Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
   --display: "Inter", "Arial", sans-serif;
   --ease-out: cubic-bezier(.23, 1, .32, 1);
@@ -132,9 +129,10 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 [hidden] { display: none !important; }
 body { margin: 0; min-width: 0; isolation: isolate; }
 main.wrap { padding-top: clamp(24px, 4vw, 64px); }
-.page-texture { position: fixed; z-index: -1; inset: 0; pointer-events: none; }
+.page-background { position: fixed; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
+.page-texture { position: absolute; inset: -64px; width: calc(100% + 128px); height: calc(100% + 128px); }
 .cursor-sparks { position: fixed; z-index: 2; inset: 0; overflow: hidden; pointer-events: none; }
-.cursor-sparks span { position: absolute; top: 0; left: 0; color: #da8598; font: 14px/1 var(--mono); opacity: 0; }
+.cursor-sparks span { position: absolute; top: 0; left: 0; color: #df8179; font: 14px/1 var(--mono); opacity: 0; }
 @media (prefers-reduced-motion: reduce) {
   .cursor-sparks { display: none; }
 }
@@ -148,63 +146,84 @@ a { color: inherit; text-decoration: none; }
 .skip { position: fixed; inset: 12px auto auto 12px; z-index: 2; background: var(--accent); color: var(--bg); padding: 12px; }
 .skip:not(:focus) { clip-path: inset(50%); }
 
-.hero { min-height: clamp(455px, 37vw, 525px); display: flex; align-items: center; isolation: isolate; position: relative; border: 1px solid var(--line); overflow: hidden; background: linear-gradient(114deg, #1a1517 22%, #241217 56%, #2c101a 100%); }
-.hero::before { content: ""; position: absolute; z-index: -2; inset: 0; background-image: repeating-linear-gradient(0deg, #f8aeb008 0 1px, transparent 1px 4px); pointer-events: none; }
-.hero-art { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
-.hero-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #1a1115 2%, #1a1115e0 26%, #1a111532 48%, transparent 64%), linear-gradient(0deg, #1a111585, transparent 20%); }
+.hero { min-height: clamp(455px, 37vw, 525px); display: flex; align-items: center; isolation: isolate; position: relative; }
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  inset: -9% 0;
+  background: radial-gradient(ellipse 41% 51% at 62% 53%, #38121e, #27121a 35%, #20101680 56%, transparent 89%);
+  pointer-events: none;
+}
+.hero-art {
+  --wave-sides: linear-gradient(90deg, transparent 12%, #0004 33%, #000 53% 82%, transparent 100%);
+  --wave-ends: linear-gradient(180deg, transparent, #000 12% 75%, transparent 100%);
+  position: absolute;
+  z-index: -1;
+  inset: 0 clamp(-52px, -3.4vw, -16px) 0 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+#wave { mask-image: var(--wave-sides), var(--wave-ends); mask-composite: intersect; }
 canvas { display: block; width: 100%; height: 100%; }
 .hero-content { width: 100%; padding: 52px clamp(26px, 5.3vw, 80px); }
 .hero h1 { font: 720 clamp(66px, 10.6vw, 151px)/.92 var(--display); letter-spacing: -.100em; margin: 0 0 24px -.047em; }
 .name-dot { color: var(--accent); }
 .aliases { font-size: clamp(15px, 2vw, 19px); letter-spacing: -.03em; margin: 0; color: var(--body); }
-.aliases > span:first-child { color: #ba7487; padding-inline: 3px; }
+.aliases > span:first-child { color: var(--accent); padding-inline: 3px; }
 .profile-meta { margin: 13px 0 0; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 13px; }
-.meta-divider { color: #c17f91; }
+.meta-divider { color: var(--accent); }
+.birthday-trigger { position: relative; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; }
+.birthday-countdown { color: #9f7e78; font-size: 10px; font-variant-numeric: tabular-nums; }
 .bio-line { max-width: 36ch; margin: 18px 0 0; color: var(--body); font-size: clamp(13px, 1.25vw, 15px); line-height: 1.65; }
 .contacts { margin-top: 23px; display: flex; flex-wrap: wrap; gap: 8px; position: relative; z-index: 1; }
-.contact, .discord-static { display: inline-flex; justify-content: space-between; align-items: center; gap: 13px; padding: 0 12px; min-height: 44px; font-size: 13px; color: var(--ink); background: #312227; border: 1px solid #76505c; cursor: pointer; }
+.contact, .discord-static { display: inline-flex; justify-content: space-between; align-items: center; gap: 13px; padding: 0 12px; min-height: 44px; font-size: 13px; color: var(--body); background: transparent; border: 0; cursor: pointer; }
 .discord-static { cursor: auto; }
-.contact.steam { background: var(--burgundy); color: var(--ink); border-color: #c7627f; }
-.contact { isolation: isolate; position: relative; gap: 9px; transition: transform 420ms var(--ease-out), border-color 300ms ease, color 300ms ease; }
-.contact::before { content: ""; position: absolute; z-index: -1; inset: 0; background: var(--accent); opacity: .15; transform: scaleX(0); transform-origin: left; transition: transform 560ms var(--ease-out), opacity 280ms ease; }
-.contact.steam::before { background: #b15d71; opacity: .26; }
+.contact { position: relative; gap: 9px; transition: transform 420ms var(--ease-out), color 300ms ease; }
+.contact::before { content: ""; position: absolute; inset: auto 12px 7px; height: 1px; background: var(--accent); opacity: 0; transform: scaleX(.35); transform-origin: left; transition: transform 340ms var(--ease-out), opacity 220ms ease; }
 .brand-icon { display: block; flex: 0 0 17px; width: 17px; height: 17px; fill: currentColor; transition: transform 480ms var(--ease-out); }
-.contact:active { transform: translateY(1px) scale(.96); transition-duration: 130ms; }
-.contact:focus-visible::before, .contact.is-copied::before, .contact:active::before { transform: scaleX(1); }
-.contact.is-copied { border-color: var(--accent); color: var(--accent); }
-.copy-mark { display: block; position: relative; width: 11px; height: 11px; }
-.copy-mark::before, .copy-mark::after { content: ""; width: 7px; height: 7px; position: absolute; border: 1px solid currentColor; }
-.copy-mark::before { left: 0; top: 0; }
-.copy-mark::after { right: 0; bottom: 0; background: #312227; }
+.contact:active { color: var(--ink); transform: translateY(1px) scale(.96); transition-duration: 130ms; }
+.contact:focus-visible::before, .contact.is-copied::before, .contact:active::before { opacity: .65; transform: scaleX(1); }
+.contact.is-copied { color: var(--accent); }
 .copy-status { position: absolute; z-index: 1; inset: calc(100% + 9px) auto auto 0; display: block; background: var(--hero); color: var(--accent); font-size: 12px; opacity: 0; transform: translateY(-9px); pointer-events: none; transition: transform 480ms var(--ease-out), opacity 420ms ease; }
 .copy-status:not(:empty) { opacity: 1; transform: translateY(0); padding: 7px 10px; border: 1px solid var(--line); pointer-events: auto; }
 
 .favorites { padding-top: clamp(10px, 2vw, 26px); }
-.favorites .current-art { height: clamp(100px, 13vw, 172px); margin-bottom: clamp(10px, 1.8vw, 24px); border: 0; background: none; }
-.current-art::after { content: none; }
+.favorites .current-art { height: clamp(100px, 13vw, 172px); margin-bottom: clamp(10px, 1.8vw, 24px); }
 .section-heading { display: flex; align-items: center; gap: clamp(10px, 2.4vw, 32px); margin-bottom: 25px; }
 .section-heading h2 { margin: 0; font: 650 clamp(31px, 4vw, 53px)/1 var(--display); letter-spacing: -.065em; }
-.section-rule { height: 1px; flex: 1; background: var(--line); }
+.section-rule { height: 1px; flex: 1; background: var(--line); transform-origin: left center; }
 .signal { font-size: 12px; line-height: 1; color: var(--muted); margin: 0; }
-.shelves { display: grid; grid-template-columns: 1fr 1fr 1.18fr; border: 1px solid var(--line); background: var(--surface); }
-.shelf { min-width: 0; position: relative; isolation: isolate; overflow: hidden; scroll-margin-top: 20px; }
-.shelf + .shelf { border-left: 1px solid var(--line); }
-.shelf h3 { display: flex; gap: 12px; align-items: center; min-height: 65px; margin: 0; padding-inline: clamp(12px, 2vw, 28px); font-size: 18px; font-weight: 580; letter-spacing: -.04em; border-bottom: 1px solid var(--line); transition: background-color 620ms ease, border-color 620ms ease; }
-.shelf:target h3 { background-color: #4a222e; border-color: #af5b74; }
+.shelves { display: grid; grid-template-columns: 1fr 1fr 1.18fr; align-items: start; gap: clamp(16px, 1.55vw, 24px); }
+.shelf { min-width: 0; padding-block: 8px 13px; scroll-margin-top: 20px; }
+.shelf h3 { display: flex; gap: 12px; align-items: center; min-height: 65px; margin: 0; padding-inline: clamp(12px, 2vw, 28px); font-size: 18px; font-weight: 580; letter-spacing: -.04em; transition: color 620ms ease; }
+.shelf:target h3 { color: var(--accent); }
 .shelf-glyph { color: var(--accent); font-size: 14px; }
-.count { margin-left: auto; min-width: 34px; padding: 4px 7px; border-radius: 100px; line-height: 1; background: #412833; color: #eccbd6; text-align: center; font-size: 12px; letter-spacing: 0; font-weight: 450; }
+.count { margin-left: auto; color: var(--muted); font-size: 12px; letter-spacing: 0; font-weight: 450; }
+.count::before { content: "[" / ""; }
+.count::after { content: "]" / ""; }
 .shelf ul { list-style: none; margin: 0; padding: 5px clamp(12px, 2vw, 28px) 12px; }
-.shelf li { min-height: 37px; padding-block: 7px; display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid var(--row); font-size: clamp(13px, 1.12vw, 15px); line-height: 1.45; color: var(--body); overflow-wrap: anywhere; }
-.shelf li:last-child { border-bottom: 0; }
-.shelf li::before { content: ""; flex: 0 0 4px; width: 4px; height: 4px; background: #ba7487; align-self: center; }
+.shelf li { font-size: clamp(13px, 1.12vw, 15px); line-height: 1.45; color: var(--body); overflow-wrap: anywhere; }
+.shelf-entry { min-height: 36px; padding-block: 7px; display: flex; align-items: baseline; gap: 8px; }
+.shelf-entry::before, .season-entry::before { content: "." / ""; flex: 0 0 1ch; color: var(--muted); }
 .shelf li.highlight { color: var(--accent); }
-.shelf li.highlight::before { background: var(--accent); }
-.hours { flex-shrink: 0; margin-inline-start: auto; color: var(--body); font-size: 11px; padding: 2px 5px; background: #422734; }
-.shelf-art { position: relative; height: clamp(142px, 13vw, 192px); pointer-events: none; overflow: hidden; border-bottom: 1px solid var(--row); background: repeating-linear-gradient(0deg, #ac677404 0 1px, transparent 1px 4px), radial-gradient(ellipse at 52% 60%, #2e1621 0, #1a1115 79%); }
-.shelf-art::after { position: absolute; content: ""; inset: 0; background: linear-gradient(90deg, #1a11155e, transparent 23%, transparent 82%, #1a11155e); }
-.comet-art { flex: 0 1 clamp(100px, 22vw, 302px); height: 90px; border: 0; background: none; }
-.comet-art::after { content: none; }
-.tide-art { margin-top: clamp(24px, 4vw, 58px); height: clamp(175px, 23vw, 300px); border: 1px solid var(--line); background: linear-gradient(180deg, var(--hero), #2d1420 54%, #1e1318); }
+.highlight :is(.shelf-entry, .season-entry)::before { content: "*" / ""; color: var(--accent); }
+.entry-name { min-width: 0; }
+a.shelf-entry::after, .season-entry::after { content: "->" / ""; flex: 0 0 auto; margin-inline-start: auto; padding-inline-start: 4px; color: var(--accent); opacity: .44; }
+a.shelf-entry:has(.hours)::after { margin-inline-start: 0; }
+.season-entry { display: flex; align-items: baseline; }
+.season-entry::before { margin-inline-end: 8px; }
+.season-entry a { display: flex; align-items: center; min-height: 36px; }
+.season-entry a:first-of-type { padding-block: 7px; }
+.season-entry a:last-child { flex-shrink: 0; min-width: 24px; padding-inline-start: 2px; }
+a.shelf-entry:focus-visible, .season-entry a:focus-visible { outline-offset: -2px; }
+a.shelf-entry:focus-visible > .entry-name, .season-entry a:focus-visible { text-decoration: underline; text-underline-offset: .25em; }
+.hours { flex-shrink: 0; margin-inline-start: auto; color: var(--muted); font-size: 11px; padding-inline-start: 5px; }
+.shelf-art { position: relative; height: clamp(142px, 13vw, 192px); pointer-events: none; overflow: hidden; }
+.shelf > .shelf-art { height: clamp(160px, 15vw, 210px); }
+.shelf > .shelf-art canvas, .tide-art canvas { mask-image: linear-gradient(90deg, transparent, #000 12% 88%, transparent); }
+.comet-art { flex: 0 1 clamp(100px, 22vw, 302px); height: 90px; }
+.tide-art { margin-top: clamp(24px, 4vw, 58px); height: clamp(175px, 23vw, 300px); background: radial-gradient(ellipse at 50% 59%, #341322, #20101670 53%, transparent 75%); }
 
 .site-footer { min-height: 113px; display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; }
 .site-footer a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
@@ -213,34 +232,76 @@ canvas { display: block; width: 100%; height: 100%; }
 .visit-count output { font-variant-numeric: tabular-nums; color: var(--accent); }
 
 @keyframes signal-glow { 0%, 100% { opacity: .56; } 50% { opacity: 1; } }
-@keyframes enter-up { from { opacity: .25; transform: translateY(20px); } }
-@keyframes row-in { from { opacity: .34; transform: translateX(-12px); } }
-@keyframes trace-in { from { transform: scaleX(0); } }
+@keyframes enter-up { from { opacity: .62; transform: translateY(20px); } }
+@keyframes contact-in { from { opacity: .52; translate: 0 16px; } }
+@keyframes heading-in { from { opacity: .8; } }
+@keyframes shelf-title-in { from { opacity: .68; transform: translateX(-17px); } }
+@keyframes count-in { from { opacity: 0; transform: translateX(9px); } }
+@keyframes row-in { from { opacity: .65; transform: translate(-10px, 12px); } }
 @keyframes art-in { from { opacity: .15; clip-path: inset(0 0 68% 0); } to { opacity: 1; clip-path: inset(0); } }
+@keyframes art-unfold {
+  from { opacity: .48; clip-path: inset(0 46%); }
+  to { opacity: 1; clip-path: inset(0); }
+}
+@keyframes contour-drift { from { transform: translate3d(-38px, -24px, 0); } to { transform: translate3d(38px, 24px, 0); } }
+@keyframes dust-drift { from { transform: translate3d(42px, -36px, 0); } to { transform: translate3d(-42px, 36px, 0); } }
 
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
+  .page-texture { animation: contour-drift 27s linear infinite alternate; }
+  .texture-dust { animation: dust-drift 20s linear infinite alternate; }
   .signal span, .shelf-glyph, .footer-prompt { animation: signal-glow 3.8s ease-in-out infinite; }
   .signal span { animation-delay: var(--offset); }
+  .shelf:nth-child(2) { --shelf-delay: 80ms; }
+  .shelf:nth-child(3) { --shelf-delay: 160ms; }
   .shelf:nth-child(2) .shelf-glyph { animation-delay: -1.25s; }
   .shelf:nth-child(3) .shelf-glyph { animation-delay: -2.5s; }
-  .hero h1, .aliases, .profile-meta, .contacts { animation: enter-up 920ms var(--ease-out) both; }
+  .hero h1, .aliases, .profile-meta, .bio-line { animation: enter-up 920ms var(--ease-out) both; }
   .hero h1 { animation-delay: 110ms; }
   .aliases { animation-delay: 215ms; }
   .profile-meta { animation-delay: 310ms; }
-  .contacts { animation-delay: 415ms; }
+  .bio-line { animation-delay: 390ms; }
+  .contacts > :is(.contact, .discord-static) {
+    animation: contact-in 700ms var(--contact-delay, 560ms) var(--ease-out) backwards;
+  }
+  .contacts > :nth-child(1) { --contact-delay: 430ms; }
+  .contacts > :nth-child(2) { --contact-delay: 495ms; }
   .hero-art { animation: art-in 1260ms var(--ease-out) both; }
-  .section-heading.in-view, .shelf h3.in-view, .site-footer.in-view { animation: enter-up 760ms var(--ease-out) both; }
-  .section-heading.in-view .section-rule { transform-origin: left; animation: trace-in 1030ms 120ms var(--ease-out) both; }
+  .section-heading.in-view { animation: heading-in 760ms var(--ease-out) both; }
+  .section-heading.in-view h2, .site-footer.in-view { animation: enter-up 820ms var(--ease-out) both; }
+  .shelf h3.in-view { animation: shelf-title-in 820ms var(--shelf-delay, 0ms) var(--ease-out) both; }
+  .shelf h3.in-view .count { animation: count-in 650ms calc(220ms + var(--shelf-delay, 0ms)) var(--ease-out) both; }
   .shelf-art.in-view { animation: art-in 1020ms var(--ease-out) both; }
+  .shelf > .shelf-art.in-view { animation: art-unfold 1150ms var(--shelf-delay, 0ms) var(--ease-out) both; }
   .shelf li.in-view { animation: row-in 690ms var(--row-delay, 0ms) var(--ease-out) both; }
+
+  .shelf-entry::before, .season-entry::before,
+  .shelf-entry::after, .season-entry::after, .entry-name, .site-footer a span {
+    transition: transform 240ms var(--ease-out), opacity 220ms ease;
+  }
+  .shelf li:has(a:active) :is(.shelf-entry, .season-entry)::after {
+    opacity: 1;
+    transform: translateX(-3px) scale(.9);
+    transition-duration: 130ms;
+  }
+  .site-footer a:active span { transform: translateY(3px); }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .shelf-entry:hover .entry-name { transform: translateX(4px); }
+  .shelf-entry:hover::before, .season-entry:has(a:hover)::before { transform: translateX(-3px) scale(1.22); }
+  .shelf-entry:hover::after, .season-entry:has(a:hover)::after { transform: translateX(5px); }
+  .site-footer a:hover:not(:active) span { transform: translateY(-5px); }
 }
 
 @media (hover: hover) and (pointer: fine) {
+  a.shelf-entry:hover .entry-name, .season-entry a:hover { text-decoration: underline; text-underline-offset: .25em; }
+  a.shelf-entry:hover::after, .season-entry:has(a:hover)::after { opacity: 1; }
   .site-footer a { transition: color 340ms ease; }
   .site-footer a:hover { color: var(--accent); }
-  .contact:hover { transform: translateY(-3px); border-color: var(--accent); }
-  .contact:hover::before { transform: scaleX(1); }
+  .contact:hover { transform: translateY(-3px); color: var(--ink); }
+  .contact:hover::before { opacity: .65; transform: scaleX(1); }
+  .bio-line a:hover { color: var(--ink); }
   .contact:hover .brand-icon { transform: translateY(-1px) rotate(-8deg) scale(1.13); }
   .contact:active { transform: translateY(1px) scale(.96); }
 }
@@ -249,7 +310,8 @@ canvas { display: block; width: 100%; height: 100%; }
   .wrap { width: calc(100% - clamp(30px, 7.2vw, 50px)); }
   .hero-content { padding-inline: 28px; }
   .shelves { grid-template-columns: 1fr 1.21fr; }
-  .shelf:nth-child(3) { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); }
+  .shelf:nth-child(3) { grid-column: 1 / -1; }
+  .hero-art { inset-inline-end: -12px; }
   .shelf li { font-size: 14px; }
 }
 
@@ -259,16 +321,20 @@ canvas { display: block; width: 100%; height: 100%; }
   .hero h1 { font-size: clamp(59px, 14.8vw, 83px); margin-bottom: 13px; }
   .contacts { margin-top: 24px; }
   .contact, .discord-static { min-height: 44px; font-size: 12px; padding-inline: 9px; gap: 7px; }
-  .hero-art { top: auto; height: clamp(235px, 65vw, 300px); }
-  .hero-art::after { background: linear-gradient(180deg, transparent 75%, #1a111585); }
+  .hero::before { inset: 0; background: radial-gradient(ellipse 53% 40% at 56% 65%, #35131f, #21121691 52%, transparent 80%); }
+  .hero-art {
+    --wave-sides: linear-gradient(90deg, transparent, #000 9% 87%, transparent);
+    --wave-ends: linear-gradient(180deg, transparent, #000 15% 77%, transparent);
+    inset: auto -8px 0;
+    height: clamp(235px, 65vw, 300px);
+  }
   .section-heading { margin-bottom: 20px; }
   .signal { font-size: 10px; }
   .shelves { grid-template-columns: 1fr; }
-  .shelf + .shelf { border-left: 0; border-top: 1px solid var(--line); }
   .shelf h3, .shelf ul { padding-inline: 17px; }
   .shelf h3 { min-height: 57px; }
-  .shelf li { min-height: 37px; }
   .shelf-art { height: 174px; }
+  .shelf > .shelf-art { height: clamp(170px, 51vw, 196px); }
   .section-heading .signal { display: none; }
   .comet-art { height: 65px; flex-basis: clamp(110px, 36vw, 185px); }
   .tide-art { height: clamp(175px, 52vw, 230px); }
@@ -279,7 +345,6 @@ canvas { display: block; width: 100%; height: 100%; }
   .contacts { gap: 6px; }
   .contact { gap: 5px; padding-inline: 7px; font-size: 11px; }
   .brand-icon { flex-basis: 14px; width: 14px; height: 14px; }
-  .contact .copy-mark { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -310,7 +375,9 @@ button { user-select: none; -webkit-user-select: none; }
 
 @media (pointer: coarse) {
   .contact, .site-footer a { min-height: 48px; }
-  .contact:active { border-color: var(--accent); }
+  .birthday-trigger::before { content: ""; position: absolute; inset: -14px -6px; }
+  .shelf-entry, .season-entry a { min-height: 44px; }
+  .season-entry a:last-child { min-width: 44px; }
 }
 
 @media (max-width: 580px) {
@@ -342,7 +409,8 @@ button { user-select: none; -webkit-user-select: none; }
 
   .discord-static { flex-wrap: wrap; }
   .copy-status { max-width: 100%; overflow-wrap: anywhere; }
-  .shelf li { padding-block: 10px; font-size: .9375rem; }
+  .shelf li { font-size: .9375rem; }
+  .shelf-entry { padding-block: 10px; }
 }
 
 @media (max-width: 440px) {
@@ -355,7 +423,6 @@ button { user-select: none; -webkit-user-select: none; }
   }
 
   .brand-icon { flex-basis: auto; width: 18px; height: 18px; }
-  .contact .copy-mark { display: none; }
 }
 
 @media (min-width: 581px) and (max-width: 1024px) and (max-height: 520px) and (orientation: landscape) and (pointer: coarse) {
@@ -369,7 +436,10 @@ button { user-select: none; -webkit-user-select: none; }
 </style>
 </head>
 <body>
-  <canvas class="page-texture" aria-hidden="true"></canvas>
+  <div class="page-background" aria-hidden="true">
+    <canvas class="page-texture"></canvas>
+    <canvas class="page-texture texture-dust"></canvas>
+  </div>
   <div class="reading-progress" aria-hidden="true"></div>
   <a class="skip" href="#main">Skip to bio</a>
   <main class="wrap" id="main">
@@ -378,13 +448,16 @@ button { user-select: none; -webkit-user-select: none; }
       <div class="hero-content">
         <h1 id="name">tekoway<span class="name-dot" aria-hidden="true">.</span></h1>
         <p class="aliases">tenko <span aria-hidden="true">/</span> <span lang="ru">тенкофлориа</span></p>
-        <p class="profile-meta"><span>he/him</span><span class="meta-divider" aria-hidden="true">/</span><span>05.02</span></p>
-        <p class="bio-line">Somebody, I've got nobody else<br>Being, I'm in love with myself</p>
+        <p class="profile-meta">
+          <span>he/him</span><span class="meta-divider" aria-hidden="true">/</span><time class="birthday-date" datetime="02-05">05.02</time>
+          <span class="birthday-countdown" id="birthday-countdown" hidden></span>
+        </p>
+        <p class="bio-line"><a href="https://www.youtube.com/watch?v=gKoaAow1XLY" target="_blank" rel="noopener noreferrer">Somebody, I've got nobody else<br>Being, I'm in love with myself</a></p>
         <div class="contacts" id="links" aria-label="Contacts">
           <a class="contact steam" href="https://steamcommunity.com/id/tekoway/" target="_blank" rel="noopener noreferrer"><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658a3.4 3.4 0 0 1 1.912-.59q.094.001.188.006l2.861-4.142V8.91a4.53 4.53 0 0 1 4.524-4.524c2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911l.004.159a3.39 3.39 0 0 1-3.39 3.396a3.41 3.41 0 0 1-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0M7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25a2.551 2.551 0 0 0 3.337-3.324a2.547 2.547 0 0 0-3.255-1.413l1.523.63a1.878 1.878 0 0 1-1.445 3.467zm11.415-9.303a3.02 3.02 0 0 0-3.015-3.015a3.015 3.015 0 1 0 3.015 3.015m-5.273-.005a2.264 2.264 0 1 1 4.531 0a2.267 2.267 0 0 1-2.266 2.265a2.264 2.264 0 0 1-2.265-2.265"/></svg>Steam</a>
           <a class="contact" href="https://t.me/tekoway" target="_blank" rel="noopener noreferrer"><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.962 7.224c.1-.002.321.023.465.14a.5.5 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024q-.159.037-5.061 3.345q-.72.495-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789q.04-.324.893-.663q5.247-2.286 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635"/></svg>Telegram</a>
           <span class="discord-static">Discord <b>tekoway</b></span>
-          <button class="contact discord" type="button" aria-label="Copy Discord username tekoway" hidden><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.8 19.8 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.3 18.3 0 0 0-5.487 0a13 13 0 0 0-.617-1.25a.08.08 0 0 0-.079-.037A19.7 19.7 0 0 0 3.677 4.37a.1.1 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.08.08 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.08.08 0 0 0 .084-.028a14 14 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13 13 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10 10 0 0 0 .372-.292a.07.07 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.07.07 0 0 1 .078.01q.181.149.373.292a.077.077 0 0 1-.006.127a12.3 12.3 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.08.08 0 0 0 .084.028a19.8 19.8 0 0 0 6.002-3.03a.08.08 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.03M8.02 15.33c-1.182 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418m7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418"/></svg>Discord<span class="copy-mark" aria-hidden="true"></span></button>
+          <button class="contact discord" type="button" aria-label="Copy Discord username tekoway" hidden><svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.8 19.8 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.3 18.3 0 0 0-5.487 0a13 13 0 0 0-.617-1.25a.08.08 0 0 0-.079-.037A19.7 19.7 0 0 0 3.677 4.37a.1.1 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.08.08 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.08.08 0 0 0 .084-.028a14 14 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13 13 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10 10 0 0 0 .372-.292a.07.07 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.07.07 0 0 1 .078.01q.181.149.373.292a.077.077 0 0 1-.006.127a12.3 12.3 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.08.08 0 0 0 .084.028a19.8 19.8 0 0 0 6.002-3.03a.08.08 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.03M8.02 15.33c-1.182 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418m7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418"/></svg>Discord</button>
           <span class="copy-status" role="status"></span>
         </div>
       </div>
@@ -403,15 +476,20 @@ button { user-select: none; -webkit-user-select: none; }
           <h3 id="anime-title"><span class="shelf-glyph" aria-hidden="true">[~]</span> Anime <span class="count" aria-label="9 titles">09</span></h3>
           <div class="shelf-art" data-ascii="bloom" aria-hidden="true"><canvas></canvas></div>
           <ul>
-            <li class="highlight">Sousou no Frieren</li>
-            <li>Mushoku Tensei</li>
-            <li class="highlight">Vinland Saga</li>
-            <li>Bocchi the Rock</li>
-            <li>K-On</li>
-            <li>Chainsaw Man</li>
-            <li class="highlight">Violet Evergarden</li>
-            <li class="highlight">Code Geass</li>
-            <li class="highlight">Cyberpunk: Edgerunners 1/2</li>
+            <li class="highlight"><a class="shelf-entry" href="https://shikimori.io/animes/52991-sousou-no-frieren" target="_blank" rel="noopener noreferrer"><span class="entry-name">Sousou no Frieren</span></a></li>
+            <li><a class="shelf-entry" href="https://shikimori.io/animes/39535-mushoku-tensei-isekai-ittara-honki-dasu" target="_blank" rel="noopener noreferrer"><span class="entry-name">Mushoku Tensei</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://shikimori.io/animes/37521-vinland-saga" target="_blank" rel="noopener noreferrer"><span class="entry-name">Vinland Saga</span></a></li>
+            <li><a class="shelf-entry" href="https://shikimori.io/animes/47917-bocchi-the-rock" target="_blank" rel="noopener noreferrer"><span class="entry-name">Bocchi the Rock</span></a></li>
+            <li><a class="shelf-entry" href="https://shikimori.io/animes/5680-k-on" target="_blank" rel="noopener noreferrer"><span class="entry-name">K-On</span></a></li>
+            <li><a class="shelf-entry" href="https://shikimori.io/animes/44511-chainsaw-man" target="_blank" rel="noopener noreferrer"><span class="entry-name">Chainsaw Man</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://shikimori.io/animes/33352-violet-evergarden" target="_blank" rel="noopener noreferrer"><span class="entry-name">Violet Evergarden</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://shikimori.io/animes/1575-code-geass-hangyaku-no-lelouch" target="_blank" rel="noopener noreferrer"><span class="entry-name">Code Geass</span></a></li>
+            <li class="highlight">
+              <div class="season-entry">
+                <a href="https://shikimori.io/animes/42310-cyberpunk-edgerunners" target="_blank" rel="noopener noreferrer" aria-label="Cyberpunk: Edgerunners, season 1">Cyberpunk: Edgerunners 1</a>
+                <a href="https://shikimori.io/animes/61990-cyberpunk-edgerunners-2" target="_blank" rel="noopener noreferrer" aria-label="Cyberpunk: Edgerunners, season 2">/2</a>
+              </div>
+            </li>
           </ul>
         </section>
 
@@ -419,19 +497,19 @@ button { user-select: none; -webkit-user-select: none; }
           <h3 id="music-title"><span class="shelf-glyph" aria-hidden="true">[=]</span> Music <span class="count" aria-label="13 artists">13</span></h3>
           <div class="shelf-art" data-ascii="signal" aria-hidden="true"><canvas></canvas></div>
           <ul>
-            <li class="highlight">Snow Strippers</li>
-            <li>s0rrow</li>
-            <li class="highlight">rie20s</li>
-            <li>thxsomch</li>
-            <li>pathetic240px</li>
-            <li>mareux</li>
-            <li>hkmori</li>
-            <li class="highlight">kurffew</li>
-            <li>otuka</li>
-            <li>leverfall</li>
-            <li>crystal castles</li>
-            <li class="highlight">zombiwebz</li>
-            <li>Miraidempa</li>
+            <li class="highlight"><a class="shelf-entry" href="https://www.youtube.com/channel/UCwZi8_BHr7eI1FEX4Kq6Zqw" target="_blank" rel="noopener noreferrer"><span class="entry-name">Snow Strippers</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/channel/UCakZwIMnbcvJyLL3h78OrGw" target="_blank" rel="noopener noreferrer"><span class="entry-name">s0rrow</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://www.youtube.com/channel/UC2V2iF5BRt8Vh5zi_JkdSNQ" target="_blank" rel="noopener noreferrer"><span class="entry-name">rie20s</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/channel/UCksiJY4ym5DeDb-5mUfkMSA" target="_blank" rel="noopener noreferrer"><span class="entry-name">thxsomch</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/channel/UCZnIPI9xcd2LJd-wm9AhuRA" target="_blank" rel="noopener noreferrer"><span class="entry-name">pathetic240px</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/@__mareux__" target="_blank" rel="noopener noreferrer"><span class="entry-name">mareux</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/channel/UCm3rbNpX0NnRGB8FVOG1cGw" target="_blank" rel="noopener noreferrer"><span class="entry-name">hkmori</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://www.youtube.com/@kurffew" target="_blank" rel="noopener noreferrer"><span class="entry-name">kurffew</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/channel/UCOsWiNp00nogLqQ0x0mwdhg" target="_blank" rel="noopener noreferrer"><span class="entry-name">otuka</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/channel/UCEu30jinaDki2MsI-4LAabg" target="_blank" rel="noopener noreferrer"><span class="entry-name">leverfall</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/channel/UCwolwTPDNMSzHV-HRii4gFQ" target="_blank" rel="noopener noreferrer"><span class="entry-name">crystal castles</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://www.youtube.com/channel/UCef3lApWwvdF0VWxzjhzEiQ" target="_blank" rel="noopener noreferrer"><span class="entry-name">zombiwebz</span></a></li>
+            <li><a class="shelf-entry" href="https://www.youtube.com/channel/UCfSCv4pbterVjqVr_274Jgw" target="_blank" rel="noopener noreferrer"><span class="entry-name">Miraidempa</span></a></li>
           </ul>
         </section>
 
@@ -439,20 +517,20 @@ button { user-select: none; -webkit-user-select: none; }
           <h3 id="games-title"><span class="shelf-glyph" aria-hidden="true">[+]</span> Games <span class="count" aria-label="14 games">14</span></h3>
           <div class="shelf-art" data-ascii="range" aria-hidden="true"><canvas></canvas></div>
           <ul>
-            <li class="highlight"><span>GeoDash</span><span class="hours">1,900 h</span></li>
-            <li class="highlight">Metro Trilogy</li>
-            <li class="highlight">Red Dead 2</li>
-            <li class="highlight">Cyberpunk 2077</li>
-            <li>Noita</li>
-            <li>Squad</li>
-            <li>Minecraft</li>
-            <li>RimWorld</li>
-            <li class="highlight">neyasnoe</li>
-            <li>Escape From Tarkov</li>
-            <li class="highlight">Voices Of The Void</li>
-            <li>Kingdom Come: Deliverance II</li>
-            <li class="highlight">Stray</li>
-            <li class="highlight">No, I’m not a Human</li>
+            <li class="highlight"><a class="shelf-entry" href="https://store.steampowered.com/app/322170/" target="_blank" rel="noopener noreferrer"><span class="entry-name">GeoDash</span><span class="hours">1,900 h</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://store.steampowered.com/bundle/13326/Metro_Saga_Bundle/" target="_blank" rel="noopener noreferrer"><span class="entry-name">Metro Trilogy</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://store.steampowered.com/app/1174180/" target="_blank" rel="noopener noreferrer"><span class="entry-name">Red Dead 2</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://store.steampowered.com/app/1091500/" target="_blank" rel="noopener noreferrer"><span class="entry-name">Cyberpunk 2077</span></a></li>
+            <li><a class="shelf-entry" href="https://store.steampowered.com/app/881100/" target="_blank" rel="noopener noreferrer"><span class="entry-name">Noita</span></a></li>
+            <li><a class="shelf-entry" href="https://store.steampowered.com/app/393380/" target="_blank" rel="noopener noreferrer"><span class="entry-name">Squad</span></a></li>
+            <li><a class="shelf-entry" href="https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc" target="_blank" rel="noopener noreferrer"><span class="entry-name">Minecraft</span></a></li>
+            <li><a class="shelf-entry" href="https://store.steampowered.com/app/294100/" target="_blank" rel="noopener noreferrer"><span class="entry-name">RimWorld</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://store.steampowered.com/app/2435180/" target="_blank" rel="noopener noreferrer"><span class="entry-name">neyasnoe</span></a></li>
+            <li><a class="shelf-entry" href="https://store.steampowered.com/app/3932890/" target="_blank" rel="noopener noreferrer"><span class="entry-name">Escape From Tarkov</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://mrdrnose.itch.io/votv" target="_blank" rel="noopener noreferrer"><span class="entry-name">Voices Of The Void</span></a></li>
+            <li><a class="shelf-entry" href="https://store.steampowered.com/app/1771300/" target="_blank" rel="noopener noreferrer"><span class="entry-name">Kingdom Come: Deliverance II</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://store.steampowered.com/app/1332010/" target="_blank" rel="noopener noreferrer"><span class="entry-name">Stray</span></a></li>
+            <li class="highlight"><a class="shelf-entry" href="https://store.steampowered.com/app/3180070/" target="_blank" rel="noopener noreferrer"><span class="entry-name">No, I’m not a Human</span></a></li>
           </ul>
         </section>
       </div>
@@ -480,8 +558,8 @@ button { user-select: none; -webkit-user-select: none; }
     [408, 469], [332, 491], [250, 508], [144, 521], [37, 531], [-30, 541]
   ];
   const palette = [
-    '#322028', '#482832', '#60303e', '#723744', '#8b4353',
-    '#a35664', '#ae6b77', '#b98189', '#c2979e', '#d1adaf'
+    '#551015', '#651a20', '#79252c', '#8e363a', '#a04445',
+    '#b55955', '#c46d66', '#d28479', '#df9f92', '#eabdab'
   ];
   const glyphs = ['.:', ':.-', ':;-=~', 'l+=-/~', '1l/;+ri', 'it1+7fe', 'xYk7v#', 'WXg#%', '#%&@', '%@M#'];
   const artwork = new WeakMap();
@@ -761,22 +839,31 @@ button { user-select: none; -webkit-user-select: none; }
     return n - Math.floor(n);
   }
 
-  window.drawPageTexture = canvas => {
+  window.drawPageTexture = (canvas, dust = false) => {
     const context = canvas.getContext('2d');
     if (!context) return;
 
     const { clientWidth: width, clientHeight: height } = canvas;
-    const scale = Math.min(devicePixelRatio || 1, 2);
+    const scale = Math.min(devicePixelRatio || 1, dust ? 1 : 1.5);
     canvas.width = Math.round(width * scale);
     canvas.height = Math.round(height * scale);
     context.setTransform(scale, 0, 0, scale, 0, 0);
-    context.font = '9px ui-monospace, Consolas, monospace';
+    context.font = `${dust ? 10 : 9}px ui-monospace, Consolas, monospace`;
     context.textBaseline = 'middle';
     const marks = '.:;=-+~';
 
-    for (let y = 7; y < height; y += 10) {
-      for (let x = 4; x < width; x += 7) {
+    const rowStep = dust ? 15 : 10;
+    const columnStep = dust ? 13 : 7;
+    for (let y = 7; y < height; y += rowStep) {
+      for (let x = 4; x < width; x += columnStep) {
         const seed = noise(x, y);
+        if (dust) {
+          if (seed > .942) {
+            context.fillStyle = seed > .987 ? '#88505e' : '#55343e';
+            context.fillText(seed > .987 ? '*' : seed > .969 ? '+' : ':', x, y);
+          }
+          continue;
+        }
         const curl = y * .036 + x * .019 + 1.65 * Math.sin(x * .012) + .74 * Math.cos(y * .017 - x * .006);
         const contour = Math.abs(Math.sin(curl));
         if (contour < .30 && seed < .86) {
@@ -790,7 +877,7 @@ button { user-select: none; -webkit-user-select: none; }
     }
   };
 
-  function bloom(x, y) {
+  function flower(x, y) {
     const px = x + .04;
     const py = (y - .41) * 1.14;
     const radius = Math.hypot(px, py);
@@ -807,6 +894,13 @@ button { user-select: none; -webkit-user-select: none; }
     return rim + petalFill + veins + seedHead + stem + leaf;
   }
 
+  function bloom(x, y) {
+    const left = .58 * flower((x + .53) / .67, (y - .26) / .67);
+    const right = .66 * flower((x - .57) / .61, (y - .13) / .61);
+    const spores = .33 * band(y - .44 + .17 * Math.sin(x * 4), .035) * band(x, .92);
+    return Math.max(flower(x, y), left, right) + spores;
+  }
+
   function signal(x, y) {
     const dx = x - .06;
     const dy = y - .49;
@@ -814,23 +908,28 @@ button { user-select: none; -webkit-user-select: none; }
     const v = (dx * .28 + dy * .96) * 1.85;
     const radius = Math.hypot(u, v);
     const angle = Math.atan2(v, u);
-    const scratch = .48 + .48 * Math.max(0, Math.cos(angle * 2 - radius * 5));
-    const disc = radius < .64 ? (.18 + .49 * Math.cos(radius * 112) ** 4) * scratch : 0;
-    const ring = .66 * band(radius - .62, .019) * scratch;
+    const scratch = .66 + .33 * Math.cos(angle * 2 - radius * 5);
+    const disc = radius < .66 ? (.22 + .56 * Math.cos(radius * 88) ** 4) * scratch : 0;
+    const ring = .66 * band(radius - .65, .025) + .31 * band(radius - .53, .02);
     const label = .74 * band(radius - .19, .042) + .58 * band(radius, .036);
     const envelope = .05 + .13 * Math.abs(Math.cos(x * 9) * Math.sin(x * 21));
-    const trace = radius > .65 ? .45 * band(dy - envelope * Math.sin(x * 46), .025) * clamp(1.4 - Math.abs(x)) : 0;
-    return disc + ring + label + trace;
+    const trace = radius > .66 ? .54 * band(dy - envelope * Math.sin(x * 37), .039) * clamp(1.55 - Math.abs(x)) : 0;
+    const arm = .55 * band(y - (.12 + (.69 - x) * .57), .021) * clamp(1 - Math.abs(x - .54) / .37);
+    return disc + ring + label + trace + arm;
   }
 
   function range(x, y, seed) {
     const horizon = .68 - .37 * Math.exp(-Math.abs(x + .33) * 3) - .22 * Math.exp(-Math.abs(x - .55) * 6) + .022 * Math.sin(x * 28) + .016 * Math.sin(x * 53);
     const moon = Math.hypot(x - .19, y - .29);
-    const moonLight = y < horizon ? .45 * band(moon - .155, .016) + .16 * clamp(1 - moon / .16) : 0;
+    const moonLight = y < horizon ? .53 * band(moon - .155, .022) + .24 * clamp(1 - moon / .16) : 0;
+    const distant = .53 - .18 * Math.exp(-Math.abs(x + .84) * 4.5) - .14 * Math.exp(-Math.abs(x - .94) * 6) + .022 * Math.sin(x * 22);
+    const farRidge = y < horizon ? .40 * band(y - distant, .026) : 0;
     const ridge = .82 * band(y - horizon, .027);
     const slope = y > horizon ? .50 * band(y - horizon, .24) * (.25 + .62 * Math.sin(x * 23 + y * 17) ** 2 + seed * .23) : 0;
     const foreground = .29 * band(y - .85 - .05 * Math.sin(x * 5 + 1), .027) * clamp(1.4 - Math.abs(x));
-    return moonLight + ridge + slope + foreground;
+    const estuary = .36 * band(y - .71 - .068 * Math.cos(x * 5), .021) * band(x, 1.55);
+    const stars = y < .44 && seed > .956 ? .33 * (1 - y) : 0;
+    return moonLight + ridge + slope + foreground + farRidge + estuary + stars;
   }
 
   function comet(x, y) {
@@ -876,12 +975,12 @@ button { user-select: none; -webkit-user-select: none; }
   }
 
   const scenes = {
-    bloom: { sample: bloom, color: [216, 133, 144] },
-    signal: { sample: signal, color: [205, 116, 131] },
-    range: { sample: range, color: [212, 122, 138] },
-    current: { sample: current, color: [203, 114, 129] },
-    comet: { sample: comet, color: [216, 139, 149] },
-    tide: { sample: tide, color: [204, 108, 126] }
+    bloom: { sample: bloom, color: [223, 130, 123], detailed: true },
+    signal: { sample: signal, color: [213, 114, 110], detailed: true },
+    range: { sample: range, color: [222, 121, 115], detailed: true },
+    current: { sample: current, color: [211, 112, 105] },
+    comet: { sample: comet, color: [223, 138, 129] },
+    tide: { sample: tide, color: [213, 105, 106] }
   };
 
   window.makeAsciiShelf = (canvas, sceneName) => {
@@ -899,20 +998,23 @@ button { user-select: none; -webkit-user-select: none; }
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
-      context.font = '8px ui-monospace, Consolas, monospace';
+      context.font = `${scene.detailed ? 9 : 8}px ui-monospace, Consolas, monospace`;
       context.textBaseline = 'middle';
-      palette = Array.from({ length: 24 }, (_, i) => `rgba(${scene.color.join(',')},${i / 29})`);
+      palette = Array.from({ length: 24 }, (_, i) => `rgba(${scene.color.join(',')},${i / 26})`);
       cells = [];
 
       const aspect = width / height;
-      for (let y = 6; y < height; y += 7) {
+      const rowStep = scene.detailed ? 6.5 : 7;
+      const cutoff = scene.detailed ? .045 : .065;
+      const coverage = scene.detailed ? .72 : .60;
+      for (let y = 6; y < height; y += rowStep) {
         for (let x = 6; x < width - 6; x += 4.5) {
           const u = (x - width / 2) / height;
           const v = y / height;
           const seed = noise(x, y);
           const haze = seed < .07 ? .15 * clamp(1 - Math.hypot(u, v - .48) / 1.5) : 0;
           const brightness = clamp((scene.sample(u, v, seed, aspect) * (.69 + seed * .46) + haze) * clamp((1 - v) * 4.5));
-          if (brightness > .065 && seed < .60 + brightness * .40) cells.push({ x, y, u, v, seed, brightness });
+          if (brightness > cutoff && seed < coverage + brightness * (1 - coverage)) cells.push({ x, y, u, v, seed, brightness });
         }
       }
     }
@@ -921,7 +1023,7 @@ button { user-select: none; -webkit-user-select: none; }
       context.clearRect(0, 0, width, height);
       for (const { x, y, u, v, seed, brightness } of cells) {
         const shimmer = .75 + .25 * Math.sin(time * .003 - u * 6 + v * 8 + seed * 3);
-        const tone = clamp(brightness * shimmer * 1.22);
+        const tone = clamp(brightness * shimmer * 1.36);
         const index = Math.min(glyphs.length - 1, 1 + Math.floor(tone * 7 + seed * 2));
         context.fillStyle = palette[Math.min(23, 2 + Math.floor(tone * 23))];
         context.fillText(glyphs[index], x, y);
@@ -938,7 +1040,6 @@ button { user-select: none; -webkit-user-select: none; }
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const wave = document.querySelector('#wave');
-  const texture = document.querySelector('.page-texture');
   const frames = new Map([[wave, { draw: time => window.drawAsciiWave(wave, time) }]]);
   const visible = new Set();
   let frameId = 0;
@@ -1002,8 +1103,12 @@ button { user-select: none; -webkit-user-select: none; }
     resize.observe(canvas);
     intersection.observe(canvas);
   }
-  const textureResize = new ResizeObserver(() => window.drawPageTexture(texture));
-  textureResize.observe(texture);
+  const textureResize = new ResizeObserver(entries => {
+    for (const { target } of entries) {
+      window.drawPageTexture(target, target.classList.contains('texture-dust'));
+    }
+  });
+  document.querySelectorAll('.page-texture').forEach(canvas => textureResize.observe(canvas));
   reducedMotion.addEventListener('change', updateLoop);
   document.addEventListener('visibilitychange', updateLoop);
 
@@ -1075,24 +1180,123 @@ button { user-select: none; -webkit-user-select: none; }
   document.querySelectorAll('.section-heading, .shelf h3, .shelf-art, .shelf li, .site-footer').forEach(part => entrance.observe(part));
 
   const progress = document.querySelector('.reading-progress');
+  const background = document.querySelector('.page-background');
+  const favorites = document.querySelector('.favorites');
+  const heading = favorites.querySelector('.section-heading');
+  const sectionRule = document.querySelector('.section-rule');
+  const current = favorites.querySelector('.current-art');
+  const currentCanvas = current.querySelector('canvas');
+  const illustrations = [...favorites.querySelectorAll('.shelf > .shelf-art canvas')];
   const scrollingElement = document.scrollingElement;
-  let progressFrame = 0;
+  let scrollFrame = 0;
 
-  function syncProgress() {
-    progressFrame = 0;
-    const available = scrollingElement.scrollHeight - scrollingElement.clientHeight;
-    const fraction = available > 0 ? Math.min(1, Math.max(0, scrollingElement.scrollTop / available)) : 0;
+  function clamp(value) {
+    return Math.max(0, Math.min(1, value));
+  }
+
+  function easeScroll(value) {
+    const t = clamp(value);
+    return t * t * (3 - 2 * t);
+  }
+
+  function syncScroll() {
+    scrollFrame = 0;
+    const height = Math.max(1, scrollingElement.clientHeight);
+    const top = heading.getBoundingClientRect().top;
+    const end = favorites.getBoundingClientRect().bottom;
+    const scrollTop = scrollingElement.scrollTop;
+    const available = scrollingElement.scrollHeight - height;
+    const fraction = available > 0 ? clamp(scrollTop / available) : 0;
+    const fadeStart = Math.min(height * .51, top + scrollTop);
+    const fadeEnd = Math.min(height * .22, fadeStart - height * .22);
+    const approach = easeScroll((fadeStart - top) / (fadeStart - fadeEnd));
+    const presence = easeScroll((end - height * .12) / (height * .58));
+    const extraMotion = !reducedMotion.matches;
+    const lineIn = easeScroll((height * .82 - top) / (height * .58));
+    const currentTravel = extraMotion
+      ? easeScroll((height * .86 - current.getBoundingClientRect().top) / (height * .84))
+      : 0;
+    const artOffsets = extraMotion ? illustrations.map(canvas => (
+      1 - easeScroll((height - canvas.parentElement.getBoundingClientRect().top) / (height * .61))
+    )) : [];
+
+    background.style.opacity = String(1 - .98 * approach * presence);
     progress.style.transform = `scaleX(${fraction})`;
+
+    const retreat = extraMotion ? easeScroll(scrollTop / (height * .7)) : 0;
+    wave.style.transform = retreat ? `translateY(${retreat * 34}px)` : '';
+    wave.style.opacity = retreat ? String(1 - retreat * .22) : '';
+    sectionRule.style.transform = extraMotion ? `scaleX(${.08 + .92 * lineIn})` : '';
+    currentCanvas.style.transform = extraMotion
+      ? `translate(${(currentTravel - .5) * 64}px, ${(1 - currentTravel) * 26}px)`
+      : '';
+    illustrations.forEach((canvas, index) => {
+      const offset = artOffsets[index];
+      canvas.style.transform = extraMotion
+        ? `translate(${(index - 1) * 24 * offset}px, ${38 * offset}px)`
+        : '';
+    });
   }
 
-  function queueProgress() {
-    if (!progressFrame) progressFrame = requestAnimationFrame(syncProgress);
+  function queueScroll() {
+    if (!scrollFrame) scrollFrame = requestAnimationFrame(syncScroll);
   }
 
-  addEventListener('scroll', queueProgress, { passive: true });
-  addEventListener('resize', queueProgress);
-  new ResizeObserver(queueProgress).observe(document.body);
-  syncProgress();
+  addEventListener('scroll', queueScroll, { passive: true });
+  addEventListener('resize', queueScroll);
+  reducedMotion.addEventListener('change', queueScroll);
+  new ResizeObserver(queueScroll).observe(document.body);
+  syncScroll();
+
+  const profile = document.querySelector('.hero-content');
+  const birthdayDate = profile.querySelector('.birthday-date');
+  const birthdayCountdown = profile.querySelector('.birthday-countdown');
+  const [birthdayMonth, birthdayDay] = birthdayDate.dateTime.split('-').map(Number);
+  const minskCalendar = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Minsk', year: 'numeric', month: 'numeric', day: 'numeric'
+  });
+  const birthdayButton = document.createElement('button');
+  birthdayButton.type = 'button';
+  birthdayButton.className = 'birthday-trigger';
+  birthdayButton.setAttribute('aria-label', 'Birthday countdown (5 February)');
+  birthdayButton.setAttribute('aria-expanded', 'false');
+  birthdayButton.setAttribute('aria-controls', birthdayCountdown.id);
+  birthdayDate.replaceWith(birthdayButton);
+  birthdayButton.append(birthdayDate);
+
+  function updateBirthdayCountdown() {
+    const { year, month, day } = Object.fromEntries(
+      minskCalendar.formatToParts(new Date()).map(({ type, value }) => [type, Number(value)])
+    );
+    const today = Date.UTC(year, month - 1, day);
+    let birthday = Date.UTC(year, birthdayMonth - 1, birthdayDay);
+    if (birthday < today) birthday = Date.UTC(year + 1, birthdayMonth - 1, birthdayDay);
+    const days = (birthday - today) / 86_400_000;
+    birthdayCountdown.textContent = days ? `${days}d until birthday` : 'Birthday today';
+  }
+
+  function showBirthdayCountdown(show) {
+    if (show) updateBirthdayCountdown();
+    birthdayCountdown.hidden = !show;
+    birthdayButton.setAttribute('aria-expanded', String(show));
+  }
+
+  birthdayDate.addEventListener('pointerenter', event => {
+    if (event.pointerType === 'mouse') showBirthdayCountdown(true);
+  });
+  birthdayDate.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'mouse') showBirthdayCountdown(false);
+  });
+  birthdayButton.addEventListener('click', event => {
+    if (event.pointerType !== 'mouse') showBirthdayCountdown(birthdayCountdown.hidden);
+  });
+  birthdayButton.addEventListener('blur', () => showBirthdayCountdown(false));
+  addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !birthdayCountdown.hidden) showBirthdayCountdown(false);
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !birthdayCountdown.hidden) updateBirthdayCountdown();
+  });
 
   const counter = document.querySelector('.visit-count');
   const localPreview = location.origin === 'http://127.0.0.1:8734';
